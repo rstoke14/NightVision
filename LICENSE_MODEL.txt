@@ -1,0 +1,3 @@
+The QuickSRNetSmall model repository identifies the model license as BSD 3-Clause.
+See https://huggingface.co/qualcomm/QuickSRNetSmall/blob/977fb3092a065d512cd587c210cc1341b28b7161/LICENSE
+for the exact license text. The model is fetched at build time from the pinned repository revision.
