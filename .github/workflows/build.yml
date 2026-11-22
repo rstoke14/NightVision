@@ -1,0 +1,32 @@
+name: Build Android test APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Download BSD-3-Clause QuickSRNetSmall model
+        run: |
+          mkdir -p app/src/main/assets
+          curl -L --fail --retry 3 \
+            'https://huggingface.co/qualcomm/QuickSRNetSmall/resolve/977fb3092a065d512cd587c210cc1341b28b7161/QuickSRNetSmall.tflite' \
+            -o app/src/main/assets/QuickSRNetSmall.tflite
+          test "$(stat -c%s app/src/main/assets/QuickSRNetSmall.tflite)" -gt 1000
+      - name: Build debug APK
+        run: gradle --no-daemon assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Forest-Neural-Test-APK
+          path: app/build/outputs/apk/debug/app-debug.apk
